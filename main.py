@@ -1,4 +1,7 @@
 from fastapi import FastAPI
-from task_routes import router
+from database import engine,Base
+
+import models
+
 app=FastAPI()
-app.include_router(router)
+Base.metadata.create_all(bind=engine)
