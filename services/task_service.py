@@ -2,15 +2,15 @@ from sqlalchemy.orm import Session
 from models import TaskModel
 from schemas import TaskCreate,TaskUpdate
 
-def create_task_services(db:Session,Task:TaskCreate):
+def create_task_services(db:Session,task:TaskCreate):
     new_Task=TaskModel(
-        title=Task.title,
-        description=Task.description,
-        priority=Task.priority
+        title=task.title,
+        description=task.description,
+        priority=task.priority
     )
     db.add(new_Task)
     db.commit()
-    db.refresh()
+    db.refresh(new_Task)
     return new_Task
 
 def get_tasks_service(db: Session):
