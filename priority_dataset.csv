@@ -1,0 +1,12 @@
+title,priority 
+Fix production bug,high 
+Fix login issue,high 
+Deploy release,high 
+Server error investigation,high 
+Write documentation,low 
+Rename variables,low 
+Code cleanup,low 
+Prepare weekly report,medium 
+Create dashboard,medium 
+Client meeting slides,medium 
+Improve UI styling,medium 
