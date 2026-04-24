@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from utils.jwt_handler import get_current_user
+from models import UserModel
 
 from database import SessionLocal
 from schemas import TaskCreate, TaskUpdate
@@ -22,18 +24,29 @@ def get_db():
 
 #Create task
 @router.post("/tasks")
-def create_task(task:TaskCreate,db:Session=Depends(get_db)):
-    return create_task_services(db,task)
+def create_task(
+    task:TaskCreate,
+    db:Session=Depends(get_db),
+    current_user:UserModel=Depends(get_current_user)
+    ):
+    return create_task_services(db,task,current_user)
 
 #Get all tasks
 @router.get("/tasks")
-def get_tasks(db: Session = Depends(get_db)):
-    return get_tasks_service(db)
+def get_tasks(
+    db: Session = Depends(get_db),
+    current_user:UserModel=Depends(get_current_user)
+              ):
+    return get_tasks_service(db,current_user)
 
 #get single task
 @router.get("/tasks/{task_id}")
-def get_single_task(task_id: int, db: Session = Depends(get_db)):
-    task = get_single_task_service(db, task_id)
+def get_single_task(
+    task_id: int, 
+    db: Session = Depends(get_db),
+    current_user:UserModel=Depends(get_current_user)
+    ):
+    task = get_single_task_service(db, task_id,current_user)
 
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -42,8 +55,13 @@ def get_single_task(task_id: int, db: Session = Depends(get_db)):
 
 #update   
 @router.put("/tasks/{task_id}")
-def update_task(task_id: int, updated_task: TaskUpdate, db: Session = Depends(get_db)):
-    task = update_task_service(db, task_id, updated_task)
+def update_task(
+    task_id: int, 
+    updated_task: TaskUpdate, 
+    db: Session = Depends(get_db),
+    current_user:UserModel=Depends(get_current_user)
+    ):
+    task = update_task_service(db, task_id, updated_task,current_user)
 
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -52,8 +70,13 @@ def update_task(task_id: int, updated_task: TaskUpdate, db: Session = Depends(ge
 
 #delete task(soft delete)
 @router.delete("/tasks/{task_id}")
-def delete_task(task_id: int, db: Session = Depends(get_db)):
-    task = delete_task_service(db, task_id)
+def delete_task(
+    task_id: int, 
+    db: Session = Depends(get_db),
+    current_user:UserModel=Depends(get_current_user)
+
+    ):
+    task = delete_task_service(db, task_id,current_user)
 
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
