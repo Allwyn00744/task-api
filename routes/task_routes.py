@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from utils.jwt_handler import get_current_user
+from services.ml_service import predict_priority
 from models import UserModel
 
 from database import SessionLocal

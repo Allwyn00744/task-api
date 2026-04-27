@@ -15,7 +15,9 @@ class TaskModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
-    priority = Column(String, nullable=False)
+    user_priority = Column(String, nullable=True)
+    predicted_priority = Column(String, nullable=True)
+    final_priority = Column(String, nullable=False)
     is_deleted = Column(Boolean, default=False)
 
     user_id = Column(Integer, ForeignKey("users.id"), index=True)

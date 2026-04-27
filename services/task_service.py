@@ -1,19 +1,29 @@
 from sqlalchemy.orm import Session
 from models import TaskModel,UserModel
 from schemas import TaskCreate,TaskUpdate
+from services.ml_service import predict_priority
 
 
 def create_task_services(db:Session,task:TaskCreate,current_user: UserModel):
+    
+    predicted=predict_priority(task.title).strip()
+    user_priority=task.priority
+    final_priority=user_priority if user_priority else predicted
     new_Task=TaskModel(
         title=task.title,
         description=task.description,
-        priority=task.priority,
+        user_priority=user_priority,
+        predicted_priority=predicted,
+        final_priority=final_priority,
         user_id=current_user.id
     )
     db.add(new_Task)
     db.commit()
     db.refresh(new_Task)
-    return new_Task
+    return {
+        "title":new_Task.title,
+        "priority":new_Task.final_priority.strip()
+    }
 
 def get_tasks_service(db: Session,current_user: UserModel):
     tasks = db.query(TaskModel).filter(
